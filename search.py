@@ -75,18 +75,20 @@ def tinyMazeSearch(problem):
     return  [s, s, w, s, w, w, s, w]
 
 def general_search(problem, frontier):
-    explored = set()  # Set to store the explored states
-    frontier.put(problem.get_start_state())  # Add the initial state to the frontier
-    while not frontier.empty():
-        node = frontier.get()  # Get the next node from the frontier
-        if problem.is_goal_state(node):
-            return node  # If the goal state is found, return it
-        explored.add(node)  # Add the current node to the explored set
-        for successor, action, step_cost in problem.get_successors(node):
-            if successor not in explored and successor not in frontier.queue:
-                # If the successor has not been explored or is not in the frontier, add it to the frontier
-                frontier.put(successor)
-    return None  # Return None if no solution is found
+    node = []
+    frontier.push((problem.getStartState(),[],0))
+
+    while True:
+        currentState, moves, _ = frontier.pop()
+        
+        if problem.isGoalState(currentState):
+            return moves
+        
+        else:
+            node.append(currentState)
+            for children,new_move,new_cost in problem.getSuccessors(currentState):
+                if (children not in node):
+                    frontier.push((children,moves+[new_move],new_cost))
 
 
 def depthFirstSearch(problem: SearchProblem):
@@ -103,7 +105,7 @@ def depthFirstSearch(problem: SearchProblem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     "*** YOUR CODE HERE ***"
-    frontier = Stack()
+    frontier = util.Stack()
 
     result = general_search(problem,frontier)
     print("DFS Final result is: ", result)
@@ -114,7 +116,7 @@ def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     #util.raiseNotDefined()
-    frontier = Queue()
+    frontier = util.Queue()
     result = general_search(problem,frontier)
     print("BFS Final result is: ", result)
     return result
