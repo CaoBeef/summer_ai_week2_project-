@@ -17,7 +17,9 @@ In search.py, you will implement generic search algorithms which are called by
 Pacman agents (in searchAgents.py).
 """
 
-import util
+import util 
+from util import Queue
+from util import Stack
 
 class SearchProblem:
     """
@@ -72,6 +74,21 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+def general_search(problem, frontier):
+    explored = set()  # Set to store the explored states
+    frontier.put(problem.get_start_state())  # Add the initial state to the frontier
+    while not frontier.empty():
+        node = frontier.get()  # Get the next node from the frontier
+        if problem.is_goal_state(node):
+            return node  # If the goal state is found, return it
+        explored.add(node)  # Add the current node to the explored set
+        for successor, action, step_cost in problem.get_successors(node):
+            if successor not in explored and successor not in frontier.queue:
+                # If the successor has not been explored or is not in the frontier, add it to the frontier
+                frontier.put(successor)
+    return None  # Return None if no solution is found
+
+
 def depthFirstSearch(problem: SearchProblem):
     """
     Search the deepest nodes in the search tree first.
@@ -86,12 +103,21 @@ def depthFirstSearch(problem: SearchProblem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = Stack()
+
+    result = general_search(problem,frontier)
+    print("DFS Final result is: ", result)
+    return result
+
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    #util.raiseNotDefined()
+    frontier = Queue()
+    result = general_search(problem,frontier)
+    print("BFS Final result is: ", result)
+    return result
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
